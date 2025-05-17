@@ -1,11 +1,16 @@
 import request from "./request.ts";
 import {EntityInfo, RelationInfo} from "./model.ts";
 
-const BASE_URL = 'http://127.0.0.1:9000/api/v1'
+const BASE_URL = '/api/v1'
 
-export const UploadFile = async (file: File): Promise<String> => {
+export const UploadFile = async (file: any, name: string = 'tmp.png'): Promise<string> => {
     const formData = new FormData();
-    formData.append('file', file);
+    console.log('upload file', file)
+    if (file instanceof File) {
+        formData.append("file", new Blob([file]), (file as File).name);
+    } else if (file instanceof Blob){
+        formData.append("file", file, name);
+    }
     const key = await request(`${BASE_URL}/file/upload`, formData, 'post_form')
     return `${BASE_URL}/file/${key}`
 }
@@ -25,6 +30,10 @@ export const EntityDelete = async (entity_id: string): Promise<string> => {
 
 export const EntityUpdate = async (id: string, data: {name?: string, data?: any}): Promise<string> => {
     return await request(`${BASE_URL}/entity/${id}`, data, 'put')
+}
+
+export const EntityTrigger = async (id: string, data: any): Promise<string> => {
+    return await request(`${BASE_URL}/entity/${id}/trigger`, data, 'post')
 }
 
 export const RelationAdd = async (source: string, target: string, relation_type: number = 1): Promise<string> => {

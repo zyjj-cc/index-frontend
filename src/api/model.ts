@@ -3,13 +3,13 @@ export interface EntityInfo {
 	data: any;
 	entity_type: number;
 	id: string;
-	name: string;
+  	name: string;
 	update_time: number;
 }
 
 
 export interface RelationInfo {
-	in: RelationEntity;
+ 	in: RelationEntity;
 	out: RelationEntity;
 	relation_type: number;
 }

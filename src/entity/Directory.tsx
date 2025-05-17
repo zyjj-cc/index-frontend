@@ -1,5 +1,15 @@
 import {Button, ButtonGroup, Form, Input, Modal, Toast, Tree} from '@douyinfe/semi-ui';
-import {IconDelete, IconEdit, IconFile, IconFolder, IconHelpCircle, IconPlusCircle} from "@douyinfe/semi-icons";
+import {
+    IconBrackets,
+    IconCheckList, IconCode,
+    IconDelete,
+    IconEdit,
+    IconFile,
+    IconFolder, IconGridRectangle,
+    IconHelpCircle,
+    IconInherit,
+    IconPlusCircle
+} from "@douyinfe/semi-icons";
 import {useEffect, useRef, useState} from "react";
 import {EntityAdd, EntityDelete, EntityUpdate, RelationAdd, RelationGetAll} from "../api/api.ts";
 import {EntityInfo, RelationInfo} from "../api/model.ts";
@@ -19,12 +29,22 @@ interface TreeData  {
 
 export function EntityIcon(props: { entity_type: number})  {
     switch (props.entity_type) {
-        case 0:
-            return <IconFolder />
-        case 1:
-            return <IconFile />
-        default:
-            return <IconHelpCircle />
+    case 0:
+        return <IconFolder />
+    case 1:
+        return <IconFile />
+    case 2:
+        return <IconInherit />
+    case 3:
+        return  <IconGridRectangle />
+    case 4:
+        return <IconCheckList />
+    case 5:
+        return <IconCode />
+    case 6:
+        return <IconBrackets />
+    default:
+        return <IconHelpCircle />
     }
 }
 
@@ -211,6 +231,7 @@ export default function Directory(props: {
 
     return <>
         <Tree
+            expandAll
             treeData={treeViewData}
             onSelect={props.onNodeSelect}
         />
@@ -230,11 +251,16 @@ export default function Directory(props: {
             footer={null}
         >
             <Form onSubmit={createNode}>
-                <Form.Input field='name' label='节点名称' style={{width: 300}}/>
                 <Form.Select field='entity_type' label='节点类型' style={{width: 300}}>
                     <Form.Select.Option value={0}>空节点</Form.Select.Option>
-                    <Form.Select.Option value={1}>文本</Form.Select.Option>
+                    <Form.Select.Option value={1}>Markdown</Form.Select.Option>
+                    <Form.Select.Option value={2}>思维导图</Form.Select.Option>
+                    <Form.Select.Option value={3}>表格</Form.Select.Option>
+                    <Form.Select.Option value={4}>看板</Form.Select.Option>
+                    <Form.Select.Option value={5}>代码</Form.Select.Option>
+                    <Form.Select.Option value={6}>JSON</Form.Select.Option>
                 </Form.Select>
+                <Form.Input field='name' label='节点名称' style={{width: 300}}/>
                 <Button block style={{marginBottom: 20}} htmlType="submit">创建</Button>
             </Form>
         </Modal>

@@ -13,7 +13,7 @@ export default function Index() {
         EntityGet(id).then(setEntityInfo)
     }
 
-    return <Row style={{margin: 5, height: 900}} gutter={16}>
+    return <Row style={{margin: 5, height: 600}} gutter={16}>
         <Col span={6}>
             <Directory onNodeSelect={onNodeSelect} />
         </Col>
