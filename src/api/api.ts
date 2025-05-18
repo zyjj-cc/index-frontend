@@ -1,7 +1,7 @@
 import request from "./request.ts";
 import {EntityInfo, RelationInfo} from "./model.ts";
 
-const BASE_URL = `https://${window.location.host}/api/v1`
+const BASE_URL = '/api/v1'
 
 export const UploadFile = async (file: any, name: string = 'tmp.png'): Promise<string> => {
     const formData = new FormData();
