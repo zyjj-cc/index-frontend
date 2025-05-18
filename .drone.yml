@@ -7,11 +7,12 @@ steps:
     pull: if-not-exists # 镜像拉取策略
     settings:
       add_host: "nexus.xiaoyou.host:192.168.2.20"
+      registry: registry.xiaoyou.host # 仓库地址
+      username: docker  # 设置私有仓库的账号密码
+      password: docker
       repo: registry.xiaoyou.host/xiaoyou66/index-front # 仓库全称
       use_cache: true   # 镜像缓存，加快构建速度
       pull: true        # 强制拉取最新基础镜像
-      username: docker  # 设置私有仓库的账号密码
-      password: docker
       tags:             # 设置我们的标签
         - latest
 
