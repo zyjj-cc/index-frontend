@@ -6,6 +6,7 @@ steps:
     image: plugins/docker
     pull: if-not-exists # 镜像拉取策略
     settings:
+      add_host: "nexus.xiaoyou.host:192.168.2.20"
       registry: registry.xiaoyou.host # 私有仓库地址
       repo: registry.xiaoyou.host/xiaoyou66/index-front # 仓库全称
       use_cache: true
@@ -13,7 +14,7 @@ steps:
       password: docker
       tags: # 设置我们的标签
         - latest
-        - 0.0.1
+        - 0.0.2
 
 trigger:
   event: push
