@@ -5,6 +5,7 @@ import {Button, Col, Form, Row, SideSheet, withField} from "@douyinfe/semi-ui";
 import {IconPlay} from "@douyinfe/semi-icons";
 import JsonEditor from "../../components/JsonEditor.tsx";
 import JsonView from "../../components/JsonView.tsx";
+import {EntityTrigger} from "../../api/api.ts";
 
 interface CodeInfo {
     content: string
@@ -55,7 +56,9 @@ export default function EntityCode(props: EntityProps<CodeInfo>) {
     const [runOutput, setRunOutput] = useState({})
 
     const entityTrigger = () => {
-
+        EntityTrigger(props.id, runInput).then(res => {
+            setRunOutput(res)
+        })
     }
 
     return <>
@@ -67,7 +70,7 @@ export default function EntityCode(props: EntityProps<CodeInfo>) {
         </Row></Form>
         <SideSheet title="代码调试" visible={visible}>
             <JsonEditor height={400} value={runInput} onChange={setRunInput} />
-            <Button style={{ marginTop: 10, marginBottom: 10}} block>运行</Button>
+            <Button onClick={entityTrigger} style={{ marginTop: 10, marginBottom: 10}} block>运行</Button>
             <JsonView value={runOutput} />
         </SideSheet>
     </>

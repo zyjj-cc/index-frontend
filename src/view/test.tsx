@@ -33,5 +33,5 @@ export default function Test() {
         console.log('on change', data)
     }
 
-    return <EntityTodo value={data} onChange={onChange} />
+    return <EntityTodo id={'0'} value={data} onChange={onChange} />
 }

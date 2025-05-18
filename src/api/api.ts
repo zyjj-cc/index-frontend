@@ -12,7 +12,7 @@ export const UploadFile = async (file: any, name: string = 'tmp.png'): Promise<s
         formData.append("file", file, name);
     }
     const key = await request(`${BASE_URL}/file/upload`, formData, 'post_form')
-    return `${BASE_URL}/file/${key}`
+    return `/file/${key}`
 }
 
 

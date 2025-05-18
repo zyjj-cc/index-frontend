@@ -12,7 +12,7 @@ export function Board(props: {
     bord:  BoardInfo,
     onAddTask: () => void,
     onDeleteBoard: () => void,
-    onEditTask: (id: string, content: string) => string,
+    onEditTask: (id: string, content: string) => void,
     onToggleComplete: (id: string) => void,
     onDeleteTask: (id: string) => void,
     editingTask?: TaskInfo,

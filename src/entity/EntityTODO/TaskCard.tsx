@@ -12,7 +12,7 @@ export interface TaskInfo {
 export function TaskCard(props: {
     task: TaskInfo,
     isDragging?: boolean,
-    onEditTask: (id: string, content: string) => string,
+    onEditTask: (id: string, content: string) => void,
     onToggleComplete: (id: string) => void,
     onDeleteTask: (id: string) => void,
     editingTask?: TaskInfo,

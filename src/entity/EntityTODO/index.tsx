@@ -185,11 +185,11 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
     };
 
     // 获取拖动中的任务内容
-    const getActiveTask = () => {
-        if (!activeId) return null;
+    const getActiveTask = ():TaskInfo | undefined => {
+        if (!activeId) return undefined;
 
         const { boardId } = findBoardByTaskId(activeId);
-        if (!boardId) return null;
+        if (!boardId) return undefined;
 
         const taskIndex = boards[boardId].tasks.findIndex(task => task.id === activeId);
         return boards[boardId].tasks[taskIndex];
@@ -322,7 +322,7 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
                     <DragOverlay>
                         {activeId ? (
                             <TaskCard
-                                task={getActiveTask()}
+                                task={getActiveTask()!}
                                 isDragging
                                 onEditTask={() => {}}
                                 onToggleComplete={() => {}}
