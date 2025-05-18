@@ -8,6 +8,7 @@ export default async function request<D, T>(
     type: 'get' | 'post' | 'put' | 'delete' | 'patch' | 'post_form' = 'get',
     alert = true
 ): Promise<T> {
+    console.log('request', url, data, type)
     let req: Promise<AxiosResponse>
     // 判断请求类型
     if (type === 'get') {
