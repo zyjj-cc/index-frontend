@@ -98,3 +98,7 @@
     width: 18px;
     height: 18px;
 }
+
+.vditor-wysiwyg__block pre:first-child code{
+    color: white!important;
+}

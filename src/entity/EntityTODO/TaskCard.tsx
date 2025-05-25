@@ -1,26 +1,27 @@
 import {useSortable} from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import {useState} from "react";
-import {Button} from "@douyinfe/semi-ui";
+import {Button, Checkbox, Input, SideSheet, Space} from "@douyinfe/semi-ui";
+import {Check, Ellipsis, SquarePen, Trash2} from "lucide-react";
+import MarkDown from "../../components/MarkDown.tsx";
 
 export interface TaskInfo {
     id: string
-    content: string
+    name: string
+    desc: string
     completed: boolean
 }
 
 export function TaskCard(props: {
     task: TaskInfo,
     isDragging?: boolean,
-    onEditTask: (id: string, content: string) => void,
+    onEditTask: (id: string, content: string, desc: string) => void,
     onToggleComplete: (id: string) => void,
     onDeleteTask: (id: string) => void,
-    editingTask?: TaskInfo,
-    setEditingTask: (task?: TaskInfo) =>  void
 }) {
-    const { task, isDragging, onEditTask, onToggleComplete, onDeleteTask, editingTask, setEditingTask } = props;
-    const [editContent, setEditContent] = useState(task.content);
-    const isEditing = editingTask && editingTask.id === task.id;
+    const { task, isDragging, onEditTask, onToggleComplete, onDeleteTask } = props;
+    const [isEditing, setIsEditing] = useState(false);
+    const [taskDescVisible, setTaskDescVisible] = useState(false);
 
     const {
         attributes,
@@ -30,73 +31,40 @@ export function TaskCard(props: {
         transition,
     } = useSortable({ id: task.id });
 
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.5 : 1,
-    };
-
-    const handleSaveEdit = () => {
-        if (editContent.trim() === '') return;
-        onEditTask(task.id, editContent);
-    };
-
-    const handleKeyDown = (e: any) => {
-        if (e.key === 'Enter') {
-            handleSaveEdit();
-        }
-    };
-
     return (
-        <div
-            ref={setNodeRef}
-            style={style}
-            className={`task-card ${task.completed ? 'completed' : ''}`}
-        >
-            {isEditing ? (
-                <div className="task-edit">
-                    <input
-                        type="text"
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        autoFocus
-                    />
-                    <div className="task-actions">
-                        <button onClick={handleSaveEdit}>保存</button>
-                        <button onClick={() => setEditingTask()}>取消</button>
-                    </div>
-                </div>
-            ) : (
-                <>
-                    <div className="task-content" {...attributes} {...listeners}>
-                        <input
-                            type="checkbox"
+        <>
+            <div ref={setNodeRef} style={{
+                transform: CSS.Transform.toString(transform),
+                transition,
+                opacity: isDragging ? 0.5 : 1,
+            }}>
+                <div className={"flex w-full justify-between"}>
+                    {isEditing ? <Input value={task.name} onChange={(text) => onEditTask(task.id, text, task.desc)}/> :
+                        <Checkbox
                             checked={task.completed}
                             onChange={() => onToggleComplete(task.id)}
-                            onClick={(e) => e.stopPropagation()}
-                        />
-                        <span className={task.completed ? 'completed-text' : ''}>{task.content}</span>
-                    </div>
-                    <div className="task-actions">
-                        <Button onClick={(e) => {
-                            // e.stopPropagation();
-                            console.log('edit task', e, task)
-                            setEditingTask(task);
-                            setEditContent(task.content);
-                        }}>
-                            <span role="img" aria-label="Edit">✏️</span>
-                        </Button>
-                        <button onClick={(e) => {
-                            // e.stopPropagation();
-                            console.log('delete task', e, task)
-                            onDeleteTask(task.id);
-                        }}>
-                            <span role="img" aria-label="Delete">🗑️</span>
-                        </button>
-                    </div>
-                </>
-            )}
-        </div>
+                            disabled={isEditing}
+                            extra={<span className={task.completed ? "line-through" : ""}>{task.desc ? task.desc.split('\n')[0] : ''}</span>}
+                        >
+                            <span
+                                {...attributes}
+                                {...listeners}
+                                className={task.completed ? "line-through" : ""}
+                            >
+                                {task.name}
+                            </span>
+                        </Checkbox>}
+                    <Space className="ml-2">
+                        <Button onClick={() => setIsEditing(!isEditing)} size={"small"}
+                            icon={isEditing ? <Check/> : <SquarePen/>}/>
+                        <Button onClick={() => setTaskDescVisible(true)} icon={<Ellipsis/>} size={"small"}/>
+                        <Button onClick={() => onDeleteTask(task.id)} size={"small"} icon={<Trash2/>}/>
+                    </Space>
+                </div>
+            </div>
+            <SideSheet closeOnEsc width={'50vw'} title={task.name} visible={taskDescVisible} onCancel={() => setTaskDescVisible(false)}>
+                <MarkDown value={task.desc} onChange={(text) => onEditTask(task.id, task.name, text)} />
+            </SideSheet>
+        </>
     );
 }

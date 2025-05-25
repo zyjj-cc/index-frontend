@@ -15,7 +15,6 @@ import {
 } from '@dnd-kit/sortable';
 import {Board, BoardInfo} from "./Board.tsx";
 import {TaskCard, TaskInfo} from "./TaskCard.tsx";
-import './style.css'
 import {Button, Input} from "@douyinfe/semi-ui";
 
 type TodoInfo = { [key: string]: BoardInfo }
@@ -23,17 +22,9 @@ type TodoInfo = { [key: string]: BoardInfo }
 export default function EntityTodo(props: EntityProps<TodoInfo>) {
     // 初始看板数据
     const [boards, setBoards] = useState<TodoInfo>(props.value);
-
-    useEffect(() => {
-        if (boards) {
-            props?.onChange(boards)
-        }
-    }, [boards])
-
     const [activeId, setActiveId] = useState<string>();
     const [newBoardTitle, setNewBoardTitle] = useState('');
     const [isEditingBoard, setIsEditingBoard] = useState(false);
-    const [editingTask, setEditingTask] = useState<TaskInfo>();
 
     // 配置传感器
     const sensors = useSensors(
@@ -219,7 +210,8 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
         const newTaskId = `task-${Date.now()}`;
         const task = {
             id: newTaskId,
-            content: '新任务',
+            name: '新任务',
+            desc: '',
             completed: false,
         }
         setBoards((prev) => {
@@ -227,23 +219,19 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
             newBoards[boardId].tasks.push(task);
             return newBoards;
         });
-
-        // 自动进入编辑模式
-        setEditingTask(task);
     };
 
     // 编辑任务
-    const handleEditTask = (taskId: string, newContent: string) => {
+    const handleEditTask = (taskId: string, name: string, desc: string) => {
         const { boardId } = findBoardByTaskId(taskId);
 
         setBoards((prev) => {
             const newBoards = { ...prev };
             const taskIndex = newBoards[boardId].tasks.findIndex(task => task.id === taskId);
-            newBoards[boardId].tasks[taskIndex].content = newContent;
+            newBoards[boardId].tasks[taskIndex].name = name;
+            newBoards[boardId].tasks[taskIndex].desc = desc;
             return newBoards;
         });
-
-        setEditingTask(undefined);
     };
 
     // 切换任务完成状态
@@ -278,15 +266,31 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
         });
     };
 
+    // 修改看板信息
+    const handleEditBoard = (boardId: string, newTitle: string) => {
+        setBoards((prev) => {
+            const newBoards = {...prev };
+            newBoards[boardId].title = newTitle;
+            return newBoards;
+        });
+    }
+
+    // 看板变化时自动触发修改
+    useEffect(() => {
+        if (boards) {
+            props?.onChange(boards)
+        }
+    }, [boards])
+
     return (
         <div className="flex flex-col w-full">
-            <div className={"w-80"}>
+            <div className={"w-80  mb-5"}>
                 {isEditingBoard ? (
                     <div className={"flex gap-2"}>
                         <Input
                             type="text"
                             value={newBoardTitle}
-                            onChange={(e) => setNewBoardTitle(e.target.value)}
+                            onChange={(text) => setNewBoardTitle(text)}
                             placeholder="输入看板名称"
                             autoFocus
                         />
@@ -297,42 +301,41 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
                     <Button onClick={() => setIsEditingBoard(true)}>添加新看板</Button>
                 )}
             </div>
-            <div className="board-container">
-                <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCorners}
-                    onDragStart={handleDragStart}
-                    onDragEnd={handleDragEnd}
-                    onDragOver={handleDragOver}
-                >
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCorners}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
+            >
+                <div className={"flex gap-2"}>
                     {Object.values(boards).map((board) => (
                         <Board
                             key={board.id}
                             bord={board}
                             onAddTask={() => handleAddTask(board.id)}
+                            onEditBoard={(title) => handleEditBoard(board.id, title)}
                             onEditTask={handleEditTask}
                             onToggleComplete={toggleTaskComplete}
                             onDeleteTask={handleDeleteTask}
                             onDeleteBoard={() => handleDeleteBoard(board.id)}
-                            editingTask={editingTask}
-                            setEditingTask={setEditingTask}
                         />
                     ))}
+                </div>
 
-                    <DragOverlay>
-                        {activeId ? (
-                            <TaskCard
-                                task={getActiveTask()!}
-                                isDragging
-                                onEditTask={() => {}}
-                                onToggleComplete={() => {}}
-                                onDeleteTask={() => {}}
-                                setEditingTask={() => {}}
-                            />
-                        ) : null}
-                    </DragOverlay>
-                </DndContext>
-            </div>
+                <DragOverlay>
+                    {activeId ? (
+                        <TaskCard
+                            task={getActiveTask()!}
+                            isDragging
+                            onEditTask={() => {}}
+                            onToggleComplete={() => {}}
+                            onDeleteTask={() => {}}
+                        />
+                    ) : null}
+                </DragOverlay>
+            </DndContext>
+
         </div>
     );
 }
