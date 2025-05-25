@@ -1,9 +1,14 @@
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import './global.css'
 import Index from "./view";
-// import Test from "./view/test.tsx";
+import EntityView from "./view/entity_view.tsx";
 
 createRoot(document.getElementById('root')!).render(
-    <Index />
-    // <Test />
+    <Router>
+        <Routes>
+            <Route path="/" element={<Index />}></Route>
+            <Route path="/entity/:id" element={<EntityView />}></Route>
+        </Routes>
+    </Router>
 )

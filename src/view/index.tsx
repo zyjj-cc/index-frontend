@@ -1,5 +1,5 @@
 import {Col, Row} from "@douyinfe/semi-ui";
-import Directory from "../entity/Directory.tsx";
+import EntityDirectory from "../entity/EntityDirectory";
 import Entity from "../entity/Entity.tsx";
 import {EntityInfo} from "../api/model.ts";
 import {useState} from "react";
@@ -15,7 +15,7 @@ export default function Index() {
 
     return <Row style={{margin: 5, height: 600}} gutter={16}>
         <Col span={6}>
-            <Directory onNodeSelect={onNodeSelect} />
+            <EntityDirectory onNodeSelect={onNodeSelect} />
         </Col>
         <Col span={18} style={{padding: "8px 0", height: '100%'}}>
             <Entity info={entityInfo} />

@@ -1,12 +1,12 @@
 import {EntityInfo} from "../api/model.ts";
-import EntityMarkDown from "./EntityMarkDown.tsx";
 import {debounce} from "lodash-es";
 import {EntityUpdate} from "../api/api.ts";
-import EntityMindMap from "./EntityMindMap.tsx";
-import EntityTable from "./EntityTable.tsx";
+import EntityMindMap from "./EntityMindMap";
+import EntityTable from "./EntityTable";
 import EntityTodo from "./EntityTODO";
 import EntityCode from "./EntityCode";
 import EntityJson from "./EntityJson";
+import EntityText from "./EntityText";
 
 export default function Entity(props: {info?: EntityInfo}) {
     const data = props.info?.data || {}
@@ -20,7 +20,7 @@ export default function Entity(props: {info?: EntityInfo}) {
 
     switch (props.info?.entity_type) {
     case 1:
-        return <EntityMarkDown id={id} value={data} onChange={onChange}  />
+        return <EntityText id={id} value={data} onChange={onChange}  />
     case 2:
         return <EntityMindMap id={id} value={data} onChange={onChange} />
     case 3:

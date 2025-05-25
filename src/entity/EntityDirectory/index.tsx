@@ -1,18 +1,19 @@
 import {Button, ButtonGroup, Form, Input, Modal, Toast, Tree} from '@douyinfe/semi-ui';
-import {
-    IconBrackets,
-    IconCheckList, IconCode,
-    IconDelete,
-    IconEdit,
-    IconFile,
-    IconFolder, IconGridRectangle,
-    IconHelpCircle,
-    IconInherit,
-    IconPlusCircle
-} from "@douyinfe/semi-icons";
 import {useEffect, useRef, useState} from "react";
-import {EntityAdd, EntityDelete, EntityUpdate, RelationAdd, RelationGetAll} from "../api/api.ts";
-import {EntityInfo, RelationInfo} from "../api/model.ts";
+import {EntityAdd, EntityDelete, EntityUpdate, RelationAdd, RelationGetAll} from "../../api/api.ts";
+import {EntityInfo, RelationInfo} from "../../api/model.ts";
+import {
+    BrainCircuit,
+    CircleHelp,
+    Code,
+    FileJson,
+    FilePlus2,
+    FileText,
+    Folder,
+    ListTodo,
+    SquarePen,
+    Table, Trash2
+} from "lucide-react";
 
 const style = {
     display: 'flex',
@@ -30,25 +31,25 @@ interface TreeData  {
 export function EntityIcon(props: { entity_type: number})  {
     switch (props.entity_type) {
     case 0:
-        return <IconFolder />
+        return <Folder />
     case 1:
-        return <IconFile />
+        return <FileText />
     case 2:
-        return <IconInherit />
+        return <BrainCircuit />
     case 3:
-        return  <IconGridRectangle />
+        return <Table />
     case 4:
-        return <IconCheckList />
+        return <ListTodo />
     case 5:
-        return <IconCode />
+        return <Code />
     case 6:
-        return <IconBrackets />
+        return <FileJson />
     default:
-        return <IconHelpCircle />
+        return <CircleHelp />
     }
 }
 
-export default function Directory(props: {
+export default function EntityDirectory(props: {
     onNodeSelect?: (id: string) => void
 }) {
     const [treeViewData, setTreeViewData] = useState<any[]>([])
@@ -150,12 +151,12 @@ export default function Directory(props: {
                                 setNodeName(node.name)
                                 setNodeId(node.id)
                                 setEditVisible(true)
-                            }} icon={<IconEdit />} type="secondary" />
+                            }} icon={<SquarePen />} type="secondary" />
                             <Button onClick={() => {
                                 setAddVisible(true)
                                 setNodeId(node.id)
-                            }} icon={<IconPlusCircle />} type="primary" />
-                            <Button onClick={() => deleteNode(node.id)} icon={<IconDelete />} type="danger" />
+                            }} icon={<FilePlus2 />} type="primary" />
+                            <Button onClick={() => deleteNode(node.id)} icon={<Trash2 />} type="danger" />
                         </ButtonGroup>
                     </div>
                 ),

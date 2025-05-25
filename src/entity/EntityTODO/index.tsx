@@ -1,4 +1,4 @@
-import {EntityProps} from "../common.ts";
+import {EntityProps} from "../common/types.ts";
 import {useEffect, useState} from "react";
 import {
     DndContext,
@@ -16,6 +16,7 @@ import {
 import {Board, BoardInfo} from "./Board.tsx";
 import {TaskCard, TaskInfo} from "./TaskCard.tsx";
 import './style.css'
+import {Button, Input} from "@douyinfe/semi-ui";
 
 type TodoInfo = { [key: string]: BoardInfo }
 
@@ -278,25 +279,24 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
     };
 
     return (
-        <>
-            <div className="board-actions">
+        <div className="flex flex-col w-full">
+            <div className={"w-80"}>
                 {isEditingBoard ? (
-                    <div className="add-board-form">
-                        <input
+                    <div className={"flex gap-2"}>
+                        <Input
                             type="text"
                             value={newBoardTitle}
                             onChange={(e) => setNewBoardTitle(e.target.value)}
                             placeholder="输入看板名称"
                             autoFocus
                         />
-                        <button onClick={handleAddBoard}>添加</button>
-                        <button onClick={() => setIsEditingBoard(false)}>取消</button>
+                        <Button onClick={handleAddBoard}>添加</Button>
+                        <Button onClick={() => setIsEditingBoard(false)}>取消</Button>
                     </div>
                 ) : (
-                    <button onClick={() => setIsEditingBoard(true)}>添加新看板</button>
+                    <Button onClick={() => setIsEditingBoard(true)}>添加新看板</Button>
                 )}
             </div>
-
             <div className="board-container">
                 <DndContext
                     sensors={sensors}
@@ -333,6 +333,6 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
                     </DragOverlay>
                 </DndContext>
             </div>
-        </>
+        </div>
     );
 }

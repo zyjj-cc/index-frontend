@@ -1,11 +1,11 @@
-import {EntityProps} from "../common.ts";
+import {EntityProps} from "../common/types.ts";
 import {useCallback, useEffect, useRef, useState} from "react";
 import start from 'monaco-python';
 import {Button, Col, Form, Row, SideSheet, withField} from "@douyinfe/semi-ui";
-import {IconPlay} from "@douyinfe/semi-icons";
 import JsonEditor from "../../components/JsonEditor.tsx";
 import JsonView from "../../components/JsonView.tsx";
 import {EntityTrigger} from "../../api/api.ts";
+import {Play} from 'lucide-react';
 
 interface CodeInfo {
     content: string
@@ -65,10 +65,10 @@ export default function EntityCode(props: EntityProps<CodeInfo>) {
         <Form initValues={props.value} onValueChange={props.onChange}><Row gutter={5}>
             <Col span={12}><Form.TagInput field='inputs' label='输入' /></Col>
             <Col span={11}><Form.TagInput field='outputs' label='输出' /></Col>
-            <Col span={1}><Form.Slot label={'执行'}><Button onClick={() => setVisible(true)} icon={<IconPlay />} /></Form.Slot></Col>
+            <Col span={1}><Form.Slot label={'执行'}><Button onClick={() => setVisible(true)} icon={<Play />} /></Form.Slot></Col>
             <Col span={24}><FormPythonEditor field='code' label='代码' /></Col>
         </Row></Form>
-        <SideSheet title="代码调试" visible={visible}>
+        <SideSheet title="代码调试" visible={visible} onCancel={() => setVisible(false)}>
             <JsonEditor height={400} value={runInput} onChange={setRunInput} />
             <Button onClick={entityTrigger} style={{ marginTop: 10, marginBottom: 10}} block>运行</Button>
             <JsonView value={runOutput} />

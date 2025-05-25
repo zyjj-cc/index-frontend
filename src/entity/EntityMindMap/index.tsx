@@ -1,12 +1,13 @@
-import {EntityProps} from "./common.ts";
+import {EntityProps} from "../common/types.ts";
 import MindMap from "simple-mind-map";
 import {useCallback, useEffect, useRef} from "react";
-import {UploadFile} from "../api/api.ts";
+import {UploadFile} from "../../api/api.ts";
 // @ts-ignore
 import {getImageSize} from 'simple-mind-map/src/utils'
 // @ts-ignore
 import NodeImgAdjust from 'simple-mind-map/src/plugins/NodeImgAdjust.js'
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
 MindMap.usePlugin(NodeImgAdjust)
 
 export default function EntityMindMap(props: EntityProps<any>) {
@@ -44,5 +45,5 @@ export default function EntityMindMap(props: EntityProps<any>) {
         mindMap.current?.setData(props.value)
     }, [props.value])
 
-    return <div style={{ height: '100%' }} ref={graph}/>
+    return <div style={{ height: '100%', minHeight: 600, width: '100%' }} ref={graph}/>
 }

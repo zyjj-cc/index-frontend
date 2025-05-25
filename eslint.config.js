@@ -22,7 +22,8 @@ export default tseslint.config(
         'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
         '@typescript-eslint/no-explicit-any': 'off',
         'indent': ['error', 4],
-        '@typescript-eslint/no-unused-expressions': 'off'
+        '@typescript-eslint/no-unused-expressions': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
     },
   },
 )
