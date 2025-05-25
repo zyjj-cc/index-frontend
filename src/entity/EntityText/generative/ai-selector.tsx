@@ -23,8 +23,8 @@ interface AISelectorProps {
 export function AISelector({ onOpenChange }: AISelectorProps) {
     const { editor } = useEditor();
     const [inputValue, setInputValue] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [completion, setCompletion] = useState("");
+    const [isLoading] = useState(false);
+    const [completion] = useState("");
 
 
     const hasCompletion = completion.length > 0;
@@ -58,7 +58,7 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
                             onValueChange={setInputValue}
                             autoFocus
                             placeholder={hasCompletion ? "Tell AI what to do next" : "Ask AI to edit or generate..."}
-                            onFocus={() => addAIHighlight(editor)}
+                            onFocus={() => editor && addAIHighlight(editor)}
                         />
                         <Button
                             size="icon"
@@ -83,13 +83,13 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
                     {hasCompletion ? (
                         <AICompletionCommands
                             onDiscard={() => {
-                                editor.chain().unsetHighlight().focus().run();
+                                editor?.chain().unsetHighlight().focus().run();
                                 onOpenChange(false);
                             }}
                             completion={completion}
                         />
                     ) : (
-                        <AISelectorCommands onSelect={(value, option) => complete(value, { body: { option } })} />
+                        <AISelectorCommands onSelect={(value, option) => console.log(value, option)} />
                     )}
                 </>
             )}
