@@ -1,6 +1,6 @@
 import {EntityProps} from "../common/types.ts";
 import MindMap from "simple-mind-map";
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useRef} from "react";
 import {UploadFile} from "../../api/api.ts";
 // @ts-ignore
 import {getImageSize} from 'simple-mind-map/src/utils'
@@ -39,11 +39,6 @@ export default function EntityMindMap(props: EntityProps<any>) {
         });
         mindMap.current.on('data_change', props.onChange)
     }, [])
-
-    useEffect(() => {
-        console.log('[mindMap] data change', props.value)
-        mindMap.current?.setData(props.value)
-    }, [props.value])
 
     return <div style={{ height: '100%', minHeight: 600, width: '100%' }} ref={graph}/>
 }

@@ -1,4 +1,4 @@
-import {Col, Row} from "@douyinfe/semi-ui";
+import { ResizeGroup, ResizeHandler, ResizeItem } from "@douyinfe/semi-ui";
 import EntityDirectory from "../entity/EntityDirectory";
 import Entity from "../entity/Entity.tsx";
 import {EntityInfo} from "../api/model.ts";
@@ -13,12 +13,13 @@ export default function Index() {
         EntityGet(id).then(setEntityInfo)
     }
 
-    return <Row style={{margin: 5, height: 600}} gutter={16}>
-        <Col span={6}>
+    return <ResizeGroup direction="horizontal">
+        <ResizeItem className={"m-2"} min={'10%'} defaultSize={"30%"}>
             <EntityDirectory onNodeSelect={onNodeSelect} />
-        </Col>
-        <Col span={18} style={{padding: "8px 0", height: '100%'}}>
+        </ResizeItem>
+        <ResizeHandler />
+        <ResizeItem className={"m-2"} defaultSize={"70%"}>
             <Entity info={entityInfo} />
-        </Col>
-    </Row>
+        </ResizeItem>
+    </ResizeGroup>
 }

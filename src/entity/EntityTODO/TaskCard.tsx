@@ -1,8 +1,9 @@
 import {useSortable} from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import {useState} from "react";
-import {Button, Checkbox, Input, SideSheet, Space} from "@douyinfe/semi-ui";
+import {Button, Checkbox, Input, SideSheet, Space, Popover} from "@douyinfe/semi-ui";
 import {Check, Ellipsis, SquarePen, Trash2} from "lucide-react";
+import MarkDownEditor from "../../components/MarkDownEditor.tsx";
 import MarkDown from "../../components/MarkDown.tsx";
 
 export interface TaskInfo {
@@ -44,7 +45,17 @@ export function TaskCard(props: {
                             checked={task.completed}
                             onChange={() => onToggleComplete(task.id)}
                             disabled={isEditing}
-                            extra={<span className={task.completed ? "line-through" : ""}>{task.desc ? task.desc.split('\n')[0] : ''}</span>}
+                            extra={
+                                <Popover
+                                    content={
+                                        <div onClick={(e) => e.stopPropagation()} className={"p-6"}>
+                                            <MarkDown value={task.desc} />
+                                        </div>
+                                    }
+                                >
+                                    <span className={task.completed ? "line-through" : ""}>{task.desc ? task.desc.split('\n')[0] : ''}</span>
+                                </Popover>
+                            }
                         >
                             <span
                                 {...attributes}
@@ -55,15 +66,17 @@ export function TaskCard(props: {
                             </span>
                         </Checkbox>}
                     <Space className="ml-2">
-                        <Button onClick={() => setIsEditing(!isEditing)} size={"small"}
-                            icon={isEditing ? <Check/> : <SquarePen/>}/>
+                        <Button
+                            onClick={() => setIsEditing(!isEditing)} size={"small"}
+                            icon={isEditing ? <Check/> : <SquarePen/>}
+                        />
                         <Button onClick={() => setTaskDescVisible(true)} icon={<Ellipsis/>} size={"small"}/>
                         <Button onClick={() => onDeleteTask(task.id)} size={"small"} icon={<Trash2/>}/>
                     </Space>
                 </div>
             </div>
             <SideSheet closeOnEsc width={'50vw'} title={task.name} visible={taskDescVisible} onCancel={() => setTaskDescVisible(false)}>
-                <MarkDown value={task.desc} onChange={(text) => onEditTask(task.id, task.name, text)} />
+                <MarkDownEditor value={task.desc} onChange={(text) => onEditTask(task.id, task.name, text)} />
             </SideSheet>
         </>
     );
