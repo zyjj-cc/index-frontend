@@ -12,10 +12,8 @@ export default function Entity(props: {info?: EntityInfo}) {
     const data = props.info?.data || {}
     const id = props.info?.id || ''
 
-    console.log('render')
-
-    const onChange = debounce((value) => {
-        EntityUpdate(props.info!.id, {data: value}).then(() => console.log('save change', value))
+    const onChange = debounce((data, desc) => {
+        EntityUpdate(props.info!.id, {data, desc}).then(() => console.log('save change', data, desc))
     }, 500);
 
     switch (props.info?.entity_type) {

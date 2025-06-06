@@ -19,6 +19,16 @@ import {Button, Input} from "@douyinfe/semi-ui";
 
 type TodoInfo = { [key: string]: BoardInfo }
 
+const convertToText = (info: TodoInfo): string => {
+    let result = ""
+    for (const boardId in info) {
+        const board = info[boardId];
+        const task = board.tasks.map((task) => `* [${task.completed? "x" : " "}] ${task.name}\n${task.desc}`).join("\n");
+        result += `# ${board.title}\n${task}\n\n`;
+    }
+    return result
+}
+
 export default function EntityTodo(props: EntityProps<TodoInfo>) {
     // 初始看板数据
     const [boards, setBoards] = useState<TodoInfo>(props.value);
@@ -278,7 +288,7 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
     // 看板变化时自动触发修改
     useEffect(() => {
         if (boards) {
-            props?.onChange(boards)
+            props?.onChange(boards, convertToText(boards))
         }
     }, [boards])
 

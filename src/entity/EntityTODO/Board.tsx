@@ -28,7 +28,7 @@ export function Board(props: {
     return (
         <div ref={setNodeRef} className={"w-100"}>
             <Card
-                title={isEditingBoard ?  <Input value={title} onChange={props.onEditBoard} />: title}
+                title={isEditingBoard ?  <Input value={title} onEnterPress={() => setIsEditingBoard(false)} onChange={props.onEditBoard} />: title}
                 headerExtraContent={<Space>
                     <Button onClick={() => setIsEditingBoard(!isEditingBoard)} icon={isEditingBoard ? <Check />:<SquarePen />} />
                     <Button onClick={props.onAddTask} icon={<Plus />} />

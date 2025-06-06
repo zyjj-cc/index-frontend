@@ -27,7 +27,6 @@ import {EntityProps} from "../common/types.ts";
 
 const extensions = [...defaultExtensions, slashCommand];
 
-
 export default function EntityText(props: EntityProps<any>) {
     const [openNode, setOpenNode] = useState(false);
     const [openColor, setOpenColor] = useState(false);
@@ -52,7 +51,7 @@ export default function EntityText(props: EntityProps<any>) {
                                 "prose prose-lg leading-none dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full",
                         },
                     }}
-                    onUpdate={({ editor }) => props.onChange(editor.getJSON())}
+                    onUpdate={({ editor }) => props.onChange(editor.getJSON(), editor.getText())}
                     slotAfter={<ImageResizer />}
                 >
                     <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">

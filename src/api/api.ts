@@ -28,12 +28,16 @@ export const EntityDelete = async (entity_id: string): Promise<string> => {
     return await request(`${BASE_URL}/entity/${entity_id}`, {}, 'delete')
 }
 
-export const EntityUpdate = async (id: string, data: {name?: string, data?: any}): Promise<string> => {
+export const EntityUpdate = async (id: string, data: {name?: string, data?: any, desc?: any}): Promise<string> => {
     return await request(`${BASE_URL}/entity/${id}`, data, 'put')
 }
 
 export const EntityTrigger = async (id: string, data: any): Promise<string> => {
     return await request(`${BASE_URL}/entity/${id}/trigger`, data, 'post')
+}
+
+export const EntitySearch = async (keyword: string): Promise<EntityInfo[]> => {
+    return await request(`${BASE_URL}/entity/search`, {keyword}, 'get')
 }
 
 export const RelationAdd = async (source: string, target: string, relation_type: number = 1): Promise<string> => {

@@ -2,5 +2,5 @@
 export interface EntityProps<T> {
     id: string
     value: T
-    onChange: (data: T) => void
+    onChange: (data: T, desc?: string) => void
 }

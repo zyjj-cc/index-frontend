@@ -62,7 +62,7 @@ export default function EntityCode(props: EntityProps<CodeInfo>) {
     }
 
     return <>
-        <Form initValues={props.value} onValueChange={props.onChange}><Row gutter={5}>
+        <Form initValues={props.value} onValueChange={data => props.onChange(data, data.code)}><Row gutter={5}>
             <Col span={12}><Form.TagInput field='inputs' label='输入' /></Col>
             <Col span={11}><Form.TagInput field='outputs' label='输出' /></Col>
             <Col span={1}><Form.Slot label={'执行'}><Button onClick={() => setVisible(true)} icon={<Play />} /></Form.Slot></Col>

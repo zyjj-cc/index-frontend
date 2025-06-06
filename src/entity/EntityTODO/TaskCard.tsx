@@ -40,7 +40,7 @@ export function TaskCard(props: {
                 opacity: isDragging ? 0.5 : 1,
             }}>
                 <div className={"flex w-full justify-between"}>
-                    {isEditing ? <Input value={task.name} onChange={(text) => onEditTask(task.id, text, task.desc)}/> :
+                    {isEditing ? <Input value={task.name} onEnterPress={() => setIsEditing(false)} onChange={(text) => onEditTask(task.id, text, task.desc)}/> :
                         <Checkbox
                             checked={task.completed}
                             onChange={() => onToggleComplete(task.id)}

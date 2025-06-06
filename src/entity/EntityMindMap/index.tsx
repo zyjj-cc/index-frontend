@@ -6,6 +6,8 @@ import {UploadFile} from "../../api/api.ts";
 import {getImageSize} from 'simple-mind-map/src/utils'
 // @ts-ignore
 import NodeImgAdjust from 'simple-mind-map/src/plugins/NodeImgAdjust.js'
+// @ts-ignore
+import markdown from 'simple-mind-map/src/parse/markdown.js'
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 MindMap.usePlugin(NodeImgAdjust)
@@ -37,7 +39,10 @@ export default function EntityMindMap(props: EntityProps<any>) {
             handleNodePasteImg: imageUpload,
             data,
         });
-        mindMap.current.on('data_change', props.onChange)
+        mindMap.current.on('data_change', (data: any) => props.onChange(
+            data,
+            markdown.transformToMarkdown(data))
+        )
     }, [])
 
     return <div style={{ height: '100%', minHeight: 600, width: '100%' }} ref={graph}/>
