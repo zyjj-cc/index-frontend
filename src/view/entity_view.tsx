@@ -19,7 +19,7 @@ export default function EntityView() {
     }, [])
 
     return (
-        <div className="flex justify-center items-center m-10">
+        <div className="flex justify-center items-center h-full">
             <Entity info={entityInfo}/>
         </div>
     );

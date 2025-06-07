@@ -62,5 +62,5 @@ export default function EntityTable(props: EntityProps<any>) {
         };
     }, []);
 
-    return <div className={"w-full h-200"} ref={containerRef} />
+    return <div className={"w-full h-full"} ref={containerRef} />
 }

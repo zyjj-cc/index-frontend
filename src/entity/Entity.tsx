@@ -7,6 +7,8 @@ import EntityTodo from "./EntityTODO";
 import EntityCode from "./EntityCode";
 import EntityJson from "./EntityJson";
 import EntityText from "./EntityText";
+import EntityDirectory from "./EntityDirectory";
+import EntityMarkdown from "./EntityMarkdown";
 
 export default function Entity(props: {info?: EntityInfo}) {
     const data = props.info?.data || {}
@@ -17,6 +19,8 @@ export default function Entity(props: {info?: EntityInfo}) {
     }, 500);
 
     switch (props.info?.entity_type) {
+    case 0:
+        return <EntityDirectory id={id} value={data} onChange={onChange} />
     case 1:
         return <EntityText id={id} value={data} onChange={onChange}  />
     case 2:
@@ -29,6 +33,8 @@ export default function Entity(props: {info?: EntityInfo}) {
         return <EntityCode id={id} value={data} onChange={onChange} />
     case 6:
         return <EntityJson id={id} value={data} onChange={onChange} />
+    case 7:
+        return <EntityMarkdown id={id} value={data} onChange={onChange}  />
     default:
         return <></>
     }

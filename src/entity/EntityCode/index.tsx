@@ -61,7 +61,7 @@ export default function EntityCode(props: EntityProps<CodeInfo>) {
         })
     }
 
-    return <>
+    return <div className={"p-2"}>
         <Form initValues={props.value} onValueChange={data => props.onChange(data, data.code)}><Row gutter={5}>
             <Col span={12}><Form.TagInput field='inputs' label='输入' /></Col>
             <Col span={11}><Form.TagInput field='outputs' label='输出' /></Col>
@@ -73,6 +73,6 @@ export default function EntityCode(props: EntityProps<CodeInfo>) {
             <Button onClick={entityTrigger} style={{ marginTop: 10, marginBottom: 10}} block>运行</Button>
             <JsonView value={runOutput} />
         </SideSheet>
-    </>
+    </div>
 }
 

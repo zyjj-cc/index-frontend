@@ -1,9 +1,15 @@
+export interface PageData<T> {
+	total: number;
+	list: T[];
+}
+
 export interface EntityInfo {
-	create_time: number;
-	data: any;
-	entity_type: number;
 	id: string;
-  	name: string;
+	entity_type: number;
+	data: any;
+	name: string;
+	desc: string;
+	create_time: number;
 	update_time: number;
 }
 
@@ -16,6 +22,7 @@ export interface RelationInfo {
 
 export interface RelationEntity {
 	entity_type: number;
+	relation_type: number;
 	id: string;
 	name: string;
 }

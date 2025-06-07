@@ -1,25 +1,29 @@
-import {Button, ButtonGroup, Form, Input, Modal, Toast, Tree} from '@douyinfe/semi-ui';
-import {useEffect, useRef, useState} from "react";
-import {EntityAdd, EntityDelete, EntityUpdate, RelationAdd, RelationGetAll} from "../../api/api.ts";
-import {EntityInfo, RelationInfo} from "../../api/model.ts";
 import {
-    BrainCircuit,
+    Button,
+    Form,
+    Modal,
+    ResizeGroup,
+    ResizeHandler,
+    ResizeItem, Space,
+    Tree
+} from '@douyinfe/semi-ui';
+import {useEffect, useRef, useState} from "react";
+import {
+    EntityAdd,
+    EntityGet,
+    RelationAdd,
+    RelationGet, RelationUpdate
+} from "../../api/api.ts";
+import {EntityInfo} from "../../api/model.ts";
+import {
     CircleHelp,
-    Code,
-    FileJson,
     FilePlus2,
-    FileText,
-    Folder,
-    ListTodo,
-    SquarePen,
-    Table, Trash2
 } from "lucide-react";
-
-const style = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-};
+import Entity from "../Entity.tsx";
+import {EntityProps} from "../common/types.ts";
+import {TreeNodeData} from "@douyinfe/semi-ui/lib/es/tree";
+import {entityTypeMap} from "../common/types.tsx";
+import {EntityDeleteButton, EntityEditButton, EntityOpenButton} from "../../components/EntityEdit.tsx";
 
 interface TreeData  {
     id: string
@@ -28,71 +32,30 @@ interface TreeData  {
     children: TreeData[]
 }
 
-export function EntityIcon(props: { entity_type: number})  {
-    switch (props.entity_type) {
-    case 0:
-        return <Folder />
-    case 1:
-        return <FileText />
-    case 2:
-        return <BrainCircuit />
-    case 3:
-        return <Table />
-    case 4:
-        return <ListTodo />
-    case 5:
-        return <Code />
-    case 6:
-        return <FileJson />
-    default:
-        return <CircleHelp />
-    }
-}
+export const EntityIcon = (props: { entity_type: number}) =>
+    entityTypeMap.has(props.entity_type) ? entityTypeMap.get(props.entity_type)?.icon : <CircleHelp />
 
-export default function EntityDirectory(props: {
-    onNodeSelect?: (id: string) => void
-}) {
+export default function EntityDirectory(props: EntityProps<null>) {
     const [treeViewData, setTreeViewData] = useState<any[]>([])
     const treeData = useRef<TreeData[]>([])
-    // 修改节点名称
-    const [nodeName, setNodeName] = useState('')
-    // 修改节点是否可见
-    const [editVisible, setEditVisible] = useState(false)
     // 新增节点是否可见
     const [addVisible, setAddVisible] = useState(false)
     // 待编辑或新增的节点id
     const [nodeId, setNodeId] = useState('')
+    // 默认展开的key
+    const [expandedKeys, setExpandedKeys] = useState<string[]>([])
+    // 节点信息
+    const [entityInfo, setEntityInfo] = useState<EntityInfo>()
 
-    // 编辑节点
-    const editNode = async () => {
-        // 修改节点名称
-        await EntityUpdate(nodeId, {name: nodeName})
-        editDeep(treeData.current, nodeId, nodeName)
-        setTreeViewData(genNode(treeData.current))
-        setEditVisible(false)
-        Toast.success('修改成功！')
-    }
-
-    // 删除节点
-    const deleteNode = (id: string) => {
-        Modal.confirm({
-            title: '确定要删除该节点吗？',
-            content: '删除后子节点联系都会消失（子节点不会删除）！',
-            onOk: async () => {
-                await EntityDelete(id)
-                deleteDeep(treeData.current, id)
-                setTreeViewData(genNode(treeData.current))
-                Toast.success('删除成功！')
-            }
-        })
-    }
-
-    // 递归添加某个节点
-    const addDeep = (nodes: TreeData[], newNode: TreeData, parent: string = "") => {
+    // 递归添加单个或者多个节点
+    const addDeep = (nodes: TreeData[], newNode: TreeData | TreeData[], parent: string = "") => {
         nodes.forEach((node) => {
             if (node.id == parent) {
-                node.children.push(newNode)
-                return
+                if (Array.isArray(newNode)) {
+                    node.children = [...newNode, ...node.children]
+                } else {
+                    node.children = [newNode, ...node.children]
+                }
             }
             if (node.children) {
                 addDeep(node.children, newNode, parent)
@@ -139,30 +102,36 @@ export default function EntityDirectory(props: {
     }
 
     // 根据节点数据生成新的树形图
-    const genNode = (data: TreeData[]) : any[] => {
+    const genNode = (data: TreeData[], parent?: string) : any[] => {
+        console.log('genNode', data)
         return data.map((node) => {
             return {
                 icon: <EntityIcon entity_type={node.entity_type} />,
                 label: (
-                    <div style={style}>
+                    <div className="flex justify-between items-center">
                         <span>{node.name}</span>
-                        <ButtonGroup size="small" theme="borderless">
-                            <Button onClick={() => {
-                                setNodeName(node.name)
-                                setNodeId(node.id)
-                                setEditVisible(true)
-                            }} icon={<SquarePen />} type="secondary" />
-                            <Button onClick={() => {
+                        <Space>
+                            {node.entity_type == 0?<Button size={"small"} onClick={() => {
                                 setAddVisible(true)
                                 setNodeId(node.id)
-                            }} icon={<FilePlus2 />} type="primary" />
-                            <Button onClick={() => deleteNode(node.id)} icon={<Trash2 />} type="danger" />
-                        </ButtonGroup>
+                            }} icon={<FilePlus2 />} type="primary" />:null}
+                            <EntityEditButton info={node} onEdit={(info: EntityInfo) => {
+                                editDeep(treeData.current, nodeId, info.name)
+                                setTreeViewData(genNode(treeData.current))
+                            }} />
+                            <EntityDeleteButton id={node.id} onDelete={() => {
+                                deleteDeep(treeData.current, node.id)
+                                setTreeViewData(genNode(treeData.current))
+                            }} />
+                            <EntityOpenButton id={node.id} />
+                        </Space>
                     </div>
                 ),
-                value: node.id,
                 key: node.id,
-                children: genNode(node.children)
+                children: genNode(node.children, node.id),
+                isLeaf: node.entity_type != 0,
+                parent: parent,
+                info: node,
             }
         })
     }
@@ -175,75 +144,78 @@ export default function EntityDirectory(props: {
         console.log('data', data)
     }
 
-    // 从所有联系中构建出目录树
-    const constructTree = (relations: RelationInfo[]) => {
-        const nodeMap = new Map<string, TreeData>();
-        const rootNodes: TreeData[] = [];
-
-        // 先创建所有节点
-        relations.forEach(relation => {
-            const inNode = relation.in;
-            const outNode = relation.out;
-
-            if (!nodeMap.has(inNode.id)) {
-                nodeMap.set(inNode.id, {
-                    id: inNode.id,
-                    name: inNode.name,
-                    entity_type: inNode.entity_type,
-                    children: []
-                });
+    // 节点选中事件(目录节点点击无响应)
+    const onNodeSelect = (id: string) => {
+        EntityGet(id).then((info) => {
+            if (info.entity_type != 0) {
+                setEntityInfo(info)
             }
+        })
+    }
 
-            if (!nodeMap.has(outNode.id)) {
-                nodeMap.set(outNode.id, {
-                    id: outNode.id,
-                    name: outNode.name,
-                    entity_type: outNode.entity_type,
-                    children: []
-                });
-            }
+    // 节点展开事件
+    const onLoadData = async (data?: TreeNodeData) => {
+        console.log('onLoadData', data)
+        if(data) {
+            const relationInfo = await RelationGet(data.key!)
+            addDeep(treeData.current, relationInfo.children.map((relation) => ({
+                id: relation.id,
+                name: relation.name,
+                entity_type: relation.entity_type,
+                children: []
+            })), relationInfo.info.id)
+            setTreeViewData(genNode(treeData.current))
+        }
+    }
 
-            const parent = nodeMap.get(inNode.id)!;
-            const child = nodeMap.get(outNode.id)!;
-
-            parent.children.push(child);
-        });
-
-        // 找出根节点
-        const allChildIds = new Set<string>();
-        relations.forEach(relation => {
-            allChildIds.add(relation.out.id);
-        });
-
-        nodeMap.forEach(node => {
-            if (!allChildIds.has(node.id)) {
-                rootNodes.push(node);
-            }
-        });
-
-        treeData.current = rootNodes
+    // 节点拖动事件
+    const onNodeDrag = async (data: any) => {
+        const source = data.dragNode.parent
+        const info = data.dragNode.info
+        const target = data.node.key
+        deleteDeep(treeData.current, info.id)
+        addDeep(treeData.current, info, target)
+        await RelationUpdate(info.id, source, target)
         setTreeViewData(genNode(treeData.current))
     }
 
+    // 构建初始节点
     useEffect(() => {
-        // 初始化获取根节点
-        RelationGetAll().then(constructTree)
-    }, [])
+        RelationGet(props.id).then((data) => {
+            setExpandedKeys([data.info.id])
+            treeData.current = [{
+                id: data.info.id,
+                name: data.info.name,
+                entity_type: data.info.entity_type,
+                children: data.children.map((relation) => ({
+                    id: relation.id,
+                    name: relation.name,
+                    entity_type: relation.entity_type,
+                    children: []
+                }))
+            }]
+            setTreeViewData(genNode(treeData.current))
+        })
+    }, [props.id])
 
     return <>
-        <Tree
-            expandAll
-            treeData={treeViewData}
-            onSelect={props.onNodeSelect}
-        />
-        <Modal
-            visible={editVisible}
-            title={"修改名称"}
-            onCancel={() => setEditVisible(false)}
-            onOk={editNode}
-        >
-            <Input value={nodeName} onChange={setNodeName} />
-        </Modal>
+        <ResizeGroup direction="horizontal">
+            <ResizeItem className={"pr-2"} min={'10%'} defaultSize={"20%"}>
+                <Tree
+                    draggable
+                    onExpand={setExpandedKeys}
+                    onDrop={onNodeDrag}
+                    loadData={onLoadData}
+                    expandedKeys={expandedKeys}
+                    treeData={treeViewData}
+                    onSelect={onNodeSelect}
+                />
+            </ResizeItem>
+            <ResizeHandler />
+            <ResizeItem defaultSize={"80%"}>
+                <Entity info={entityInfo} />
+            </ResizeItem>
+        </ResizeGroup>
         <Modal
             style={{width: 350}}
             visible={addVisible}
@@ -252,16 +224,12 @@ export default function EntityDirectory(props: {
             footer={null}
         >
             <Form onSubmit={createNode}>
-                <Form.Select field='entity_type' label='节点类型' style={{width: 300}}>
-                    <Form.Select.Option value={0}>空节点</Form.Select.Option>
-                    <Form.Select.Option value={1}>Markdown</Form.Select.Option>
-                    <Form.Select.Option value={2}>思维导图</Form.Select.Option>
-                    <Form.Select.Option value={3}>表格</Form.Select.Option>
-                    <Form.Select.Option value={4}>看板</Form.Select.Option>
-                    <Form.Select.Option value={5}>代码</Form.Select.Option>
-                    <Form.Select.Option value={6}>JSON</Form.Select.Option>
-                </Form.Select>
                 <Form.Input field='name' label='节点名称' style={{width: 300}}/>
+                <Form.Select field='entity_type' label='节点类型' style={{width: 300}}>
+                    {Array.from(entityTypeMap.entries()).map(([key, value]) =>
+                        <Form.Select.Option key={key} value={key}><Space>{value.icon}<span>{value.label}</span></Space></Form.Select.Option>
+                    )}
+                </Form.Select>
                 <Button block style={{marginBottom: 20}} htmlType="submit">创建</Button>
             </Form>
         </Modal>

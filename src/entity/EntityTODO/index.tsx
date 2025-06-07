@@ -293,7 +293,7 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
     }, [boards])
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full h-full p-3">
             <div className={"w-80  mb-5"}>
                 {isEditingBoard ? (
                     <div className={"flex gap-2"}>
@@ -345,7 +345,6 @@ export default function EntityTodo(props: EntityProps<TodoInfo>) {
                     ) : null}
                 </DragOverlay>
             </DndContext>
-
         </div>
     );
 }

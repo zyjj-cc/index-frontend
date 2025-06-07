@@ -34,12 +34,12 @@ export default function EntityText(props: EntityProps<any>) {
     const [openAI, setOpenAI] = useState(false);
 
     return (
-        <div className="relative w-full max-w-screen-lg">
+        <div className="relative w-full h-full overflow-y-scroll">
             <EditorRoot>
                 <EditorContent
                     initialContent={props.value}
                     extensions={extensions}
-                    className="relative min-h-[500px] w-full max-w-screen-lg border-muted bg-background sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:shadow-lg"
+                    className="relative w-full h-full border-none"
                     editorProps={{
                         handleDOMEvents: {
                             keydown: (_view, event) => handleCommandNavigation(event),
@@ -47,8 +47,7 @@ export default function EntityText(props: EntityProps<any>) {
                         handlePaste: (view, event) => handleImagePaste(view, event, uploadFn),
                         handleDrop: (view, event, _slice, moved) => handleImageDrop(view, event, moved, uploadFn),
                         attributes: {
-                            class:
-                                "prose prose-lg leading-none dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full",
+                            class: "prose prose-lg leading-none prose-headings:font-title font-default focus:outline-none max-w-full",
                         },
                     }}
                     onUpdate={({ editor }) => props.onChange(editor.getJSON(), editor.getText())}
