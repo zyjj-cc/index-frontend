@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
-import {EntityInfo} from "../api/model.ts";
 import {useEffect, useState} from "react";
-import Entity from "../entity/Entity.tsx";
-import {EntityGet} from "../api/api.ts";
+import {Api} from "index_common/index";
+import Entity from "index_common/entity/Entity";
+import {EntityInfo} from "index_common/api/model";
 
 export default function EntityView() {
     // 获取路径参数
@@ -11,7 +11,7 @@ export default function EntityView() {
 
     useEffect(() => {
         if (params.id) {
-            EntityGet(params.id).then((info) => {
+            Api.EntityGet(params.id).then((info) => {
                 setEntityInfo(info)
                 document.title = info.name
             })

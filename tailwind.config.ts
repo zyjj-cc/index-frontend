@@ -3,7 +3,8 @@ import type { Config } from "tailwindcss";
 const config = {
     darkMode: "class",
     content: [
-        "./src/**/*.{ts,tsx}"
+        "./src/**/*.{ts,tsx}",
+        "./common/packages/**/*.{ts,tsx}",
     ],
     prefix: "",
     theme: {
@@ -72,8 +73,8 @@ const config = {
         },
     },
     plugins: [
-        require("tailwindcss-animate"),
-        require("@tailwindcss/typography")
+        // require("tailwindcss-animate"),
+        // require("@tailwindcss/typography")
     ],
 } satisfies Config;
 

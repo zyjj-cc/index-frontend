@@ -4,6 +4,7 @@ import './global.css'
 import Index from "./view";
 import EntityView from "./view/entity_view.tsx";
 
+
 createRoot(document.getElementById('root')!).render(
     <Router>
         <Routes>
